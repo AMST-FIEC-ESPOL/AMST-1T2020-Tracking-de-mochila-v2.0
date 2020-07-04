@@ -56,6 +56,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         //Declaracion de variables
+        autologin();
         edtextmail = findViewById(R.id.Edtxt_login);
         edtextpass = findViewById(R.id.Edtxt_pass);
         signInButton = findViewById(R.id.signButton);
@@ -65,7 +66,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         btnRegistro = findViewById(R.id.btnRegistro);
         btnLogin = findViewById(R.id.btnLogin);
         progressDialog = new ProgressDialog(this);
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -78,7 +78,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     edtextpass.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            logueado(v);
+                            logueado();
                         }
                     });
                 }
@@ -101,7 +101,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 registro();
                 break;
             case R.id.btnLogin:
-                logueado(view);
+                logueado();
                 break;
         }
     }
@@ -148,7 +148,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             info_user.put("user_name", user.getDisplayName());
             info_user.put("user_email", user.getEmail());
             info_user.put("user_photo", String.valueOf(user.getPhotoUrl()));
-            info_user.put("user_id", user.getUid());
             finish();
             Intent intent = new Intent(Login.this, Sistema.class);
             startActivity(intent);
@@ -161,7 +160,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         startActivity(regis);
     }
 
-    public void logueado(View v){
+    public void logueado(){
         final String email = edtextmail.getText().toString().trim();
         final String pass = edtextpass.getText().toString().trim();
         if(TextUtils.isEmpty(email)|| TextUtils.isEmpty(pass)){
@@ -211,6 +210,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                             progressDialog.dismiss(); // termina el progressDialog
                         }
                     });
+        }
+    }
+    public void autologin(){
+        String correo = Preferences.ObtenerCredenciales(this,"email", (String) null); //obtiene String de las credenciales guardadas
+        String nom_usuario = Preferences.ObtenerCredenciales(this,"nom_usuario", (String) null); //obtiene String de las credenciales guardadas
+       if(correo!=null && nom_usuario!= null){
+            irSistema(); // ingresa al sistema si existen valores guardados en el SharedPreferences
         }
     }
     public void irSistema(){
