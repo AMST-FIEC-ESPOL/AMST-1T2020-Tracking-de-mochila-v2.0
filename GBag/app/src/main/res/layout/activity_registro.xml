@@ -35,7 +35,7 @@
                 app:boxStrokeColor="@color/colorPrimaryDark">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/nombre_registro"
+                    android:id="@+id/EdTnombre_registro"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
@@ -60,7 +60,7 @@
                 app:boxStrokeColor="@color/colorPrimaryDark">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/apellido_registro"
+                    android:id="@+id/EdTapellido_registro"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
@@ -85,20 +85,20 @@
                 app:boxStrokeColor="@color/colorPrimaryDark">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/email_registro"
+                    android:id="@+id/EdTemail_registro"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="8dp"
                     android:ems="10"
-                    android:hint="EMAIL"
+                    android:hint="CORREO"
                     android:inputType="textPersonName"
+                    android:singleLine="true"
                     android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
-                    android:textSize="22sp"
-                    android:singleLine="true"/>
+                    android:textSize="22sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,7 +109,7 @@
                 app:boxStrokeColor="@color/colorPrimaryDark">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/pass_registro"
+                    android:id="@+id/EdTpass_registro"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
@@ -128,7 +128,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/pass_longitud"
+                android:id="@+id/Txtpass_longitud"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -140,7 +140,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/pass_digito"
+                android:id="@+id/Txtpass_espacio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -148,11 +148,11 @@
                 android:layout_marginEnd="8dp"
                 android:drawableStart="@drawable/ic_cancel_red_24dp"
                 android:padding="5dp"
-                android:text="Al menos 1 digito"
+                android:text="Sin espacio"
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/pass_mayuscula"
+                android:id="@+id/Txtpass_mayuscula"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -164,7 +164,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/pass_minuscula"
+                android:id="@+id/Txtpass_digito"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -172,7 +172,7 @@
                 android:layout_marginEnd="8dp"
                 android:drawableStart="@drawable/ic_cancel_red_24dp"
                 android:padding="5dp"
-                android:text="Al menos 1 minuscula"
+                android:text="Al menos 1 digito"
                 android:visibility="gone" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -181,7 +181,7 @@
                 app:boxStrokeColor="@color/colorPrimaryDark">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/passconfir_registro"
+                    android:id="@+id/EdTpassconfir_registro"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
@@ -212,6 +212,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/back_registbutton"
+                android:onClick="registro"
                 android:text="REGISTRARSE"
                 android:textColor="#ffffff"
                 android:textSize="22sp" />

@@ -11,6 +11,7 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Login extends AppCompatActivity implements View.OnClickListener{
-
+    Button btnRegistro;
     SignInButton signInButton;
     GoogleSignInClient mGoogleSignInClient;
     FirebaseAuth mAuth;
@@ -47,6 +48,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         signInButton = findViewById(R.id.signButton);
         mAuth = FirebaseAuth.getInstance();
         signInButton.setSize(SignInButton.SIZE_STANDARD);
+        btnRegistro = findViewById(R.id.btnRegistro);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -54,6 +56,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
         signInButton.setOnClickListener(this);
+        btnRegistro.setOnClickListener(this);
 
     }
 
@@ -63,7 +66,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
             case R.id.signButton:
                 singIn();
                 break;
-
+            case R.id.btnRegistro:
+                registro();
+                break;
         }
     }
 
@@ -116,5 +121,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         } else {
             System.out.println("sin registrarse");
         }
+    }
+    public void registro(){
+        Intent regis = new Intent(Login.this,Registro.class);
+        startActivity(regis);
     }
 }
