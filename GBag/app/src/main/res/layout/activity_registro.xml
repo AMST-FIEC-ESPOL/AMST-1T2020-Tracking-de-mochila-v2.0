@@ -93,12 +93,37 @@
                     android:layout_marginEnd="8dp"
                     android:ems="10"
                     android:hint="CORREO"
-                    android:inputType="textPersonName"
+                    android:inputType="textEmailAddress"
                     android:singleLine="true"
                     android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
                     android:textSize="22sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/colorPrimaryDark">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/Edcelular"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="8dp"
+                    android:ems="10"
+                    android:hint="CELULAR"
+                    android:inputType="phone"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#ffffff"
+                    android:textColorHint="#b4b7b7"
+                    android:textSize="22sp"
+                    android:maxLength="10"
+                    android:digits="0123456789"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

@@ -5,7 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -38,7 +41,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.FirebaseAuthCredentialsProvider;
 import android.os.Parcelable;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Login extends AppCompatActivity implements View.OnClickListener{
@@ -95,13 +100,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.signButton:
-                singIn();
+                if(verConexioInternet()){
+                    singIn();
+                }
                 break;
             case R.id.btnRegistro:
                 registro();
                 break;
             case R.id.btnLogin:
-                logueado();
+                if(verConexioInternet()){
+                    logueado();
+                }
                 break;
         }
     }
@@ -144,15 +153,31 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
     private void updateUI(FirebaseUser user){
         if (user != null) {
-            HashMap<String, String> info_user = new HashMap<String, String>();
-            info_user.put("user_name", user.getDisplayName());
-            info_user.put("user_email", user.getEmail());
-            info_user.put("user_photo", String.valueOf(user.getPhotoUrl()));
-            finish();
-            Intent intent = new Intent(Login.this, Sistema.class);
-            startActivity(intent);
+            final Map<String, Object> map_user = new HashMap<>();
+            map_user.put("dispvinculados", Collections.emptyList());
+            map_user.put("nombre", user.getDisplayName());
+            map_user.put("apellido", "");
+            if(user.getPhoneNumber()==null || user.getPhoneNumber().isEmpty()){
+                map_user.put("celular","");
+            }else{
+                map_user.put("celular",user.getPhoneNumber());
+            }
+            progressDialog.setMessage("Iniciando sesion"); //Muestra un progressDialog con ese mensaje
+            progressDialog.show();
+            db.collection("usuarios").document(Objects.requireNonNull(user.getEmail())).set(map_user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(Login.this,"Inicio de Sesion Satisfactorio",Toast.LENGTH_SHORT).show();
+                        irSistema();
+                        progressDialog.dismiss(); // termina el progressDialog
+                    }else{
+                        Toast.makeText(Login.this,"Fallo en el registro",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         } else {
-            System.out.println("sin registrarse");
+            System.out.println("Fallo al registrarse");
         }
     }
     public void registro(){
@@ -224,5 +249,21 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         startActivity(i);
         finish(); // destruye la actividad
 
+    }
+
+    public boolean verConexioInternet(){
+        try {
+            ConnectivityManager con = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+            assert con != null;
+            NetworkInfo networkInfo = con.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                return true;
+            }else{
+                Toast.makeText(Login.this,"Verifique su conexion de Internet",Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }catch (NullPointerException n){
+            return false;
+        }
     }
 }

@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 
 public class Registro extends AppCompatActivity {
     TextView txtpasslong,txtpassdig,txtpassmayus,txtpassesp;
-    EditText ednom, edapell, edmail, edpass, edpassconf;
+    EditText ednom, edapell, edmail, edpass, edpassconf, edphone;
     ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
@@ -67,6 +67,7 @@ public class Registro extends AppCompatActivity {
         edmail = findViewById(R.id.EdTemail_registro);
         edpass = findViewById(R.id.EdTpass_registro);
         edpassconf = findViewById(R.id.EdTpassconfir_registro);
+        edphone = findViewById(R.id.Edcelular);
         txtpasslong = findViewById(R.id.Txtpass_longitud);
         txtpassmayus = findViewById(R.id.Txtpass_mayuscula);
         txtpassesp = findViewById(R.id.Txtpass_espacio);
@@ -206,9 +207,10 @@ public class Registro extends AppCompatActivity {
         String email = edmail.getText().toString().trim();
         String pass = edpass.getText().toString().trim();
         String pass_conf = edpassconf.getText().toString().trim();
+        String phone = edphone.getText().toString().trim();
         if(TextUtils.isEmpty(nombre) || TextUtils.isEmpty(apellido)||
                 TextUtils.isEmpty(email)|| TextUtils.isEmpty(pass)||
-                TextUtils.isEmpty(pass_conf)) {
+                TextUtils.isEmpty(pass_conf) || TextUtils.isEmpty(phone)) {
             if(TextUtils.isEmpty(nombre)){
                 ednom.setError("Este campo no puede estar vacio");
             }
@@ -224,6 +226,9 @@ public class Registro extends AppCompatActivity {
             if(TextUtils.isEmpty(pass_conf)){
                 edpassconf.setError("Este campo no puede estar vacio");
             }
+            if(TextUtils.isEmpty(phone)){
+                edphone.setError("Este campo no puede estar vacio");
+            }
 
             return false;
         }else{
@@ -236,12 +241,14 @@ public class Registro extends AppCompatActivity {
         String pass = edpass.getText().toString().trim();
         final String nombre = ednom.getText().toString().trim();
         final String apellido = edapell.getText().toString().trim();
+        String phone = edphone.getText().toString().trim();
         if (validar_vacios() && validar_mail(email) && validar_pass(pass)) {
 
             final Map<String, Object> map_user = new HashMap<>();
             map_user.put("dispvinculados", Collections.emptyList());
             map_user.put("nombre", nombre);
             map_user.put("apellido", apellido);
+            map_user.put("celular",phone);
 
             try {
                 ConnectivityManager con = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
