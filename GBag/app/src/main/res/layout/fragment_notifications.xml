@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#094275"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.notifications.NotificationsFragment">
@@ -12,5 +13,6 @@
         android:id="@+id/btnCerrarSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#dc7364"
         android:text="Cerrar Sesion" />
 </RelativeLayout>

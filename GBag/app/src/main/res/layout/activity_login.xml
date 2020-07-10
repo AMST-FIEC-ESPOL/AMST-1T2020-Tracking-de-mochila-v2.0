@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/back_gradient_login"
+    android:background="#094275"
     tools:context=".Login">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="600dp"
+        android:background="#094275"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,12 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbarAlwaysDrawVerticalTrack="false">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -86,7 +88,7 @@
                     android:layout_width="330dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/back_loginbutton"
+                    android:background="#dc7364"
                     android:text="LOGIN"
                     android:textColor="#ffffff"
                     android:textSize="22sp"
@@ -97,7 +99,7 @@
                     android:layout_width="330dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/back_registbutton"
+                    android:background="#f0d5c0"
                     android:text="REGISTRARSE"
                     android:textColor="#ffffff"
                     android:textSize="22sp" />

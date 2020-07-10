@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#094275"
     android:orientation="vertical"
-    android:background="@drawable/back_gradient_register"
     tools:context=".Registro">
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-medium"
         android:text="REGISTRO"
-        android:textColor="#31eded"
+        android:textColor="#FFFFFF"
         android:textSize="36dp" />
 
     <ScrollView
@@ -42,14 +42,14 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="8dp"
                     android:ems="10"
-                    android:singleLine="true"
-                    android:inputType="textPersonName"
-                    android:text=""
                     android:hint="NOMBRE"
+                    android:inputType="textPersonName"
+                    android:maxLength="20"
+                    android:singleLine="true"
+                    android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
-                    android:textSize="22sp"
-                    android:maxLength="20"/>
+                    android:textSize="22sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,15 +66,15 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="8dp"
-                    android:singleLine="true"
                     android:ems="10"
                     android:hint="APELLIDO"
                     android:inputType="textPersonName"
+                    android:maxLength="20"
+                    android:singleLine="true"
                     android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
-                    android:textSize="22sp"
-                    android:maxLength="20"/>
+                    android:textSize="22sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,16 +114,16 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="8dp"
+                    android:digits="0123456789"
                     android:ems="10"
                     android:hint="CELULAR"
                     android:inputType="phone"
+                    android:maxLength="10"
                     android:singleLine="true"
                     android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
-                    android:textSize="22sp"
-                    android:maxLength="10"
-                    android:digits="0123456789"/>
+                    android:textSize="22sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -143,12 +143,12 @@
                     android:ems="10"
                     android:hint="CONTRASEÑA"
                     android:inputType="textPassword"
+                    android:maxLength="20"
+                    android:singleLine="true"
                     android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
-                    android:textSize="22sp"
-                    android:singleLine="true"
-                    android:maxLength="20"/>
+                    android:textSize="22sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -215,12 +215,12 @@
                     android:ems="10"
                     android:hint="CONFIRMAR CONTRASEÑA"
                     android:inputType="textPassword"
+                    android:maxLength="20"
+                    android:singleLine="true"
                     android:text=""
                     android:textColor="#ffffff"
                     android:textColorHint="#b4b7b7"
-                    android:textSize="22sp"
-                    android:singleLine="true"
-                    android:maxLength="20"/>
+                    android:textSize="22sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -228,7 +228,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxStrokeColor="@color/colorPrimaryDark"/>
+                app:boxStrokeColor="@color/colorPrimaryDark" />
 
             <Button
                 android:id="@+id/btnRegistrarse"
@@ -236,7 +236,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/back_registbutton"
+                android:background="#dc7364"
                 android:onClick="registro"
                 android:text="REGISTRARSE"
                 android:textColor="#ffffff"

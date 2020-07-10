@@ -96,7 +96,7 @@ public class DashboardFragment extends Fragment implements OnMapReadyCallback{
 
             @Override
             public void onMarkerDrag(Marker marker) {
-                
+
             }
 
             @Override
