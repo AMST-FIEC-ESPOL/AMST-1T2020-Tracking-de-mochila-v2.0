@@ -42,7 +42,7 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
 
     @Override
     public int getItemCount() {
-        return 0;
+        return listaDatos.size();
     }
 
     public class ViewHolderDatos extends RecyclerView.ViewHolder {
