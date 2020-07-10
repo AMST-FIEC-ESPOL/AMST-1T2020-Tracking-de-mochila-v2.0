@@ -1,5 +1,6 @@
 package com.example.g_bag.ui.home;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,16 +17,19 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
 
 
     ArrayList<String> listaDatos ;
+    Context context;
 
-    public AdapterDatos(ArrayList<String> listaDatos) {
+    public AdapterDatos(ArrayList<String> listaDatos, Context context) {
         this.listaDatos = listaDatos;
+        this.context = context;
     }
 
 
     @NonNull
     @Override
     public ViewHolderDatos onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.items_list,null,false);
+        LayoutInflater layout = LayoutInflater.from(context);
+        View view = layout.inflate(R.layout.items_list,parent,false);
         return new ViewHolderDatos(view);
 
     }

@@ -14,31 +14,45 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.g_bag.Mochila;
 import com.example.g_bag.R;
 
 import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+
     private RecyclerView recyclerView;
     ArrayList<String> listaDatos;
+    AdapterDatos adapter;
 
+    public HomeFragment() {
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerMochilas);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext(),LinearLayoutManager.VERTICAL,false));
-        listaDatos = new ArrayList<>();
-        for (int i = 0; i<10; i++){
-            listaDatos.add("Elemento" + i);
-        }
-        AdapterDatos adapter = new AdapterDatos(listaDatos);
+        adapter = new AdapterDatos(listaDatos,getContext());
+        //recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext(),LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+
         return root;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        listaDatos = new ArrayList<>();
+        for (int i =0; i<5; i++){
+            Mochila mochila = new Mochila(String.valueOf(i));
+
+            listaDatos.add("Mochila"+mochila.getIdDispositivo());
+
+        }
+    }
 }
