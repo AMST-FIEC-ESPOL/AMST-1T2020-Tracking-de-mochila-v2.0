@@ -12,8 +12,11 @@
         android:roundIcon="@drawable/logotipo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
-        <activity android:name=".Registro"></activity>
-        <activity android:name=".Sistema" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.Design"></activity>
+        <activity android:name=".Registro" />
         <activity
             android:name=".Login"
             android:windowSoftInputMode="stateAlwaysHidden" />

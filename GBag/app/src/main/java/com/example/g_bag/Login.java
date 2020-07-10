@@ -245,7 +245,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         }
     }
     public void irSistema(){
-        Intent i = new Intent(Login.this,Sistema.class);
+        Intent i = new Intent(Login.this,MainActivity.class);
         startActivity(i);
         finish(); // destruye la actividad
 
