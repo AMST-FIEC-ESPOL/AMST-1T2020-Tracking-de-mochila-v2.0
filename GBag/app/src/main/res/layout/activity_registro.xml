@@ -236,10 +236,10 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
-                android:background="#dc7364"
+                android:background="@drawable/back_loginbutton"
                 android:onClick="registro"
                 android:text="REGISTRARSE"
-                android:textColor="#ffffff"
+                android:textColor="#100F0F"
                 android:textSize="22sp" />
 
         </LinearLayout>

@@ -50,7 +50,6 @@ public class HomeFragment extends Fragment {
         listaDatos = new ArrayList<>();
         for (int i =0; i<5; i++){
             Mochila mochila = new Mochila(String.valueOf(i));
-
             listaDatos.add("Mochila"+mochila.getIdDispositivo());
 
         }

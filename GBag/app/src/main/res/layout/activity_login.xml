@@ -86,9 +86,9 @@
                 <Button
                     android:id="@+id/btnLogin"
                     android:layout_width="330dp"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:background="#dc7364"
+                    android:background="@drawable/back_loginbutton"
                     android:text="LOGIN"
                     android:textColor="#ffffff"
                     android:textSize="22sp"
@@ -97,11 +97,11 @@
                 <Button
                     android:id="@+id/btnRegistro"
                     android:layout_width="330dp"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:background="#f0d5c0"
+                    android:background="@drawable/back_registbutton"
                     android:text="REGISTRARSE"
-                    android:textColor="#ffffff"
+                    android:textColor="#221F1F"
                     android:textSize="22sp" />
 
                 <TextView
@@ -117,9 +117,10 @@
 
                 <com.google.android.gms.common.SignInButton
                     android:id="@+id/signButton"
-                    android:layout_width="234dp"
-                    android:layout_height="69dp"
-                    android:layout_marginTop="15dp">
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    app:buttonSize="wide">
 
                 </com.google.android.gms.common.SignInButton>
 

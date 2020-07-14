@@ -67,7 +67,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         signInButton = findViewById(R.id.signButton);
         firebaseAuth = FirebaseAuth.getInstance();
         db =  FirebaseFirestore.getInstance();
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
         btnRegistro = findViewById(R.id.btnRegistro);
         btnLogin = findViewById(R.id.btnLogin);
         progressDialog = new ProgressDialog(this);
@@ -151,7 +150,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         });
     }
 
-    private void updateUI(FirebaseUser user){
+    private void updateUI(final FirebaseUser user){
         if (user != null) {
             final Map<String, Object> map_user = new HashMap<>();
             map_user.put("dispvinculados", Collections.emptyList());
@@ -168,6 +167,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
+                        Preferences.SaveCredenciales(Login.this,user.getEmail(),"email"); //guarda un  String con llave user
+                        Preferences.SaveCredenciales(Login.this,user.getDisplayName(),"nom_usuario");//guarda un  String con llave nombre
                         Toast.makeText(Login.this,"Inicio de Sesion Satisfactorio",Toast.LENGTH_SHORT).show();
                         irSistema();
                         progressDialog.dismiss(); // termina el progressDialog
