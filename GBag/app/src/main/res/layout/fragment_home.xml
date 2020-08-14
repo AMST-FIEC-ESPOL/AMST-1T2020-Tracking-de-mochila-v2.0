@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#094275"
     android:orientation="vertical"
-    tools:context=".ui.mochila.MochilaFragment">
+    tools:context=".ui.home.HomeFragment">
 
     <TextView
         android:id="@+id/textView"
