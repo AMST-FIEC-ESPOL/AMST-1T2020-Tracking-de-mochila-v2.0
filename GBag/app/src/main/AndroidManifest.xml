@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.g_bag">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -17,10 +16,10 @@
         android:icon="@mipmap/ic_logotipo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logotipo"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Design.NoActionBar"
-        android:screenOrientation="portrait">
-
+        android:theme="@style/Theme.Design.NoActionBar">
+        <activity android:name=".ui.home.ModoMochila"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -36,17 +35,17 @@
         <activity
             android:name=".ui.dashboard.MapsActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.Design"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Design" />
         <activity android:name=".Registro" />
         <activity
             android:name=".Login"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".Bienvenida">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
