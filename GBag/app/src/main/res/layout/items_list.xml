@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#094275"
-    android:orientation="vertical">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/idDato"
-        android:layout_width="250dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:background="#094275"
-        android:text="Lista" />
+        android:text="Mochila"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/imageButton"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0"
+        android:background="@android:drawable/ic_dialog_info" />
+
+    <Switch
+        android:id="@+id/switchOnOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="0"
+        android:text="ON/OFF"
+        android:textSize="14sp" />
+
 </LinearLayout>
