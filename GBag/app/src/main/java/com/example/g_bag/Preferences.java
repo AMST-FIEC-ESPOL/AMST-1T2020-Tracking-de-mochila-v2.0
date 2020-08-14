@@ -39,6 +39,14 @@ public class Preferences {
         edit.apply();
     }
 
+    public static Usuario getUsuario(Context c,String key){
+        String json = c.getSharedPreferences(PREFERENCES_CREDENCIALES,c.MODE_PRIVATE).getString(key,null);
+        if(json == null){
+            return null;
+        }
+        return new Gson().fromJson(json, Usuario.class);
+    }
+
 
     public static void LimpiarCredenciales(Context c){
         SharedPreferences preferences = c.getSharedPreferences(PREFERENCES_CREDENCIALES,c.MODE_PRIVATE);
