@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/textView31"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
@@ -35,6 +35,12 @@
             android:text="Cambiar Modo"
             android:textSize="24sp" />
 
+        <ImageView
+            android:id="@+id/bluetoothView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
     <Spinner
@@ -42,18 +48,147 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/EdtxTelefonEnviar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Telefono a Enviar SMS"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnModificarTelf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Modificar" />
+    </LinearLayout>
+
     <Button
-        android:id="@+id/btnModoEstatico"
+        android:id="@+id/btnModoEncender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:text="Estatico" />
+        android:text="ENCENDER BLUETOOH" />
 
     <Button
-        android:id="@+id/btnModoLive"
+        android:id="@+id/btnModoApagar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Live" />
+        android:text="APAGAR BLUETOOTH" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/switchModo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Live" />
+
+        <TextView
+            android:id="@+id/txtViewEstatico"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estatico" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Bluetooh a conectar:" />
+
+            <TextView
+                android:id="@+id/RefBluetooh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:text="HC-06" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contraseña del Bluetooh a conectar:" />
+
+            <TextView
+                android:id="@+id/PassBluetooh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:text="1234" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Bluetooh conectado:" />
+
+            <TextView
+                android:id="@+id/NombBluetooh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnConectarBlue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CONECTAR BLUETOOTH" />
+
+        <Button
+            android:id="@+id/btnActivarModo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="ACTIVAR MODO" />
+
+        <TextView
+            android:id="@+id/textMensaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnEnviarBlue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ENVIAR" />
+    </LinearLayout>
 
 </LinearLayout>
