@@ -29,7 +29,7 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        root = inflater.inflate(R.layout.fragment_notifications, container, false);
+        root = inflater.inflate(R.layout.fragment_perfil, container, false);
         //Inicializando Variables
         btnCerrarSesion = root.findViewById(R.id.btnCerrarSesion);
         photo_user = root.findViewById(R.id.imgViewPhoto);

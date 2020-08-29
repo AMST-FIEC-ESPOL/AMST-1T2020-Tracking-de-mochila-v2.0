@@ -20,7 +20,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 
+import com.example.g_bag.Preferences;
 import com.example.g_bag.R;
+import com.example.g_bag.Usuario;
+import com.example.g_bag.ui.mochila.Mochila;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -40,15 +43,25 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class MapaFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     GoogleMap mapaGoogle;
-    public LatLng UBICACIONU = new LatLng(-0.947334, -80.732324);
+
+    DatabaseReference db_reference;
+    private ArrayList<Marker> temprealTimeMarker = new ArrayList<>();
+    private ArrayList<Marker> realTimeMarker = new ArrayList<>();
     LocationManager manejadorLocalizacion;
+    public LatLng UBICACIONU = new LatLng(-0.947334, -80.732324);
     double milongitudeGPS, milatitudeGPS;
     private GoogleApiClient clienteGoogleApi;
     private Location ultimaLocalizacion;
@@ -60,14 +73,21 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     private LocationSettingsRequest configresquisitoLocalizacion;
 
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View root = inflater.inflate(R.layout.fragment_mapa, container, false);
         manejadorLocalizacion = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        db_reference = FirebaseDatabase.getInstance().getReference();
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
+
 
         //inicializacion variables
         clienteGoogleApi = new GoogleApiClient.Builder(getActivity())
@@ -118,6 +138,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             }
         });
 
+
         return root;
     }
 
@@ -131,10 +152,38 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         mapaGoogle.setMyLocationEnabled(true);
         UiSettings settings = mapaGoogle.getUiSettings();
         settings.setZoomControlsEnabled(true);
-
         //setMarkerDragListener(mapaGoogle);
 
     }
+
+    public void obtenerMochila(DatabaseReference databaseReference, final String id_dispositivo){
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                try {
+                    double latitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("latitud").getValue()));
+                    double longitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("longitud").getValue()));
+                    if(latitud!=0.0&&longitud!=0.0){
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(new LatLng(latitud,longitud));
+                        temprealTimeMarker.add(mapaGoogle.addMarker(markerOptions));
+                    }else{
+                        Toast.makeText(getActivity(),"Dispositivo "+id_dispositivo+" fuera de alcance para enviar datos",Toast.LENGTH_SHORT).show();
+                    }
+
+                }catch (NullPointerException n){
+                    Toast.makeText(getActivity(),"Error al obtener la ubicacion del dispositivo",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                System.out.println(databaseError.toException());
+
+            }
+        });
+    }
+
 
     @Override
     public void onStart() {
@@ -231,16 +280,38 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     private void mi_marcador(double latitude, double longitude) {
         mapaGoogle.clear(); //limpio el mapa
-        milatitudeGPS = latitude;
-        milongitudeGPS = longitude;
-        LatLng latLng = new LatLng(latitude, longitude);
-        mapaGoogle.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        //mapaGoogle.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_logotipo)).anchor(0.0f,1.0f).position(latLng).title("Mi ubicacion")); //añade un marcador con un icono
+        if(this.milatitudeGPS==0.0 && this.milongitudeGPS==0.0){
+            milatitudeGPS = latitude;
+            milongitudeGPS = longitude;
+            LatLng latLng = new LatLng(milatitudeGPS, milongitudeGPS);
+            mapaGoogle.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mapaGoogle.addMarker(new MarkerOptions().position(latLng).title("Mi ubicacion"));
+        }
+        LatLng latLng = new LatLng(milatitudeGPS, milongitudeGPS);
         mapaGoogle.addMarker(new MarkerOptions().position(latLng).title("Mi ubicacion"));
+
+        //mapaGoogle.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_logotipo)).anchor(0.0f,1.0f).position(latLng).title("Mi ubicacion")); //añade un marcador con un icono
+
+        Usuario usuario = Preferences.getUsuario(getActivity().getApplicationContext(),"obusuario");
+        for(Marker marker: realTimeMarker){
+            marker.remove();
+        }
+        if(usuario!=null){
+            for(Mochila mochila: usuario.getMochilas()){
+                if(mochila.getEncd_apagado().equalsIgnoreCase("on")){
+                    DatabaseReference db_dispositivos = db_reference.child("dispositivos").child(mochila.getId_dispositivo());
+                    obtenerMochila(db_dispositivos,mochila.getId_dispositivo());
+                }
+            }
+        }
+        realTimeMarker.clear();
+        realTimeMarker.addAll(temprealTimeMarker);
     }
 
 
 
+
+    //Calculando distancia radial de un punto a otro punto
     public double CalculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km
         double lat1 = StartP.latitude;
@@ -286,6 +357,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             }
         });
     }
+
 
     //Permisos de CONEXION INTERNET - LOCALIZACIÓN
     public boolean verConexioInternet() {
@@ -350,6 +422,4 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         ultimaLocalizacion = location;
         updateLocationUI();
     }
-
-
 }
