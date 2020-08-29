@@ -21,8 +21,8 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
-        <activity android:name=".ui.home.AddMochilas"></activity>
-        <activity android:name=".ui.home.ModoMochila" />
+        <activity android:name=".ui.mochila.AddMochilas"></activity>
+        <activity android:name=".ui.mochila.ModoMochila" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -36,7 +36,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.dashboard.MapsActivity"
+            android:name=".ui.mapa.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait" />
         <activity

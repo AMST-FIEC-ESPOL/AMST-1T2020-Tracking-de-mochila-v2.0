@@ -1,6 +1,6 @@
 package com.example.g_bag;
 
-import com.example.g_bag.ui.home.Mochila;
+import com.example.g_bag.ui.mochila.Mochila;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;

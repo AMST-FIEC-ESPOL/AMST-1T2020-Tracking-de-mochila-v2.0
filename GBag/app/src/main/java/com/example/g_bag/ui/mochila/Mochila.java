@@ -1,6 +1,10 @@
-package com.example.g_bag.ui.home;
+package com.example.g_bag.ui.mochila;
 
 public class Mochila {
+
+    String id_dispositivo,alias,encd_apagado,bateria;
+    String latitud,longitud;
+    String modo;
 
     public Mochila(String id_dispositivo) {
         this.id_dispositivo = id_dispositivo;
@@ -9,6 +13,8 @@ public class Mochila {
         this.longitud="0.00";
         this.encd_apagado="off";
         this.bateria="";
+        this.modo = "REAL";
+
     }
 
     public String getAlias() {
@@ -51,10 +57,6 @@ public class Mochila {
         this.longitud = longitud;
     }
 
-    String id_dispositivo,alias,encd_apagado,bateria;
-    String latitud,longitud;
-
-
     public String getId_dispositivo() {
         return id_dispositivo;
     }
@@ -63,4 +65,11 @@ public class Mochila {
         this.id_dispositivo = id_dispositivo;
     }
 
+    public String getModo() {
+        return modo;
+    }
+
+    public void setModo(String modo) {
+        this.modo = modo;
+    }
 }

@@ -1,16 +1,13 @@
-package com.example.g_bag.ui.dashboard;
+package com.example.g_bag.ui.mapa;
 
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
 
 import com.example.g_bag.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 

@@ -1,4 +1,4 @@
-package com.example.g_bag.ui.home;
+package com.example.g_bag.ui.mochila;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

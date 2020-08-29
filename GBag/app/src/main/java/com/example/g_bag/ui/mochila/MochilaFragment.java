@@ -1,4 +1,4 @@
-package com.example.g_bag.ui.home;
+package com.example.g_bag.ui.mochila;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,20 +18,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.g_bag.Login;
 import com.example.g_bag.Preferences;
 import com.example.g_bag.R;
 import com.example.g_bag.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class MochilaFragment extends Fragment {
 
 
     private RecyclerView recyclerView;
@@ -40,8 +38,10 @@ public class HomeFragment extends Fragment {
     AdapterDatos adapter;
     private FirebaseFirestore db;
     Button BtnAgregarmochilas,BtncambiarModo;
+    ViewGroup viewGroup;
+    ArrayList<String> ids;
 
-    public HomeFragment() {
+    public MochilaFragment() {
     }
     public void setListaDatos(String s) {
         this.listaDatos.add(s);
@@ -49,12 +49,27 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_mochila, container, false);
+        this.viewGroup = container;
         recyclerView = (RecyclerView) root.findViewById(R.id.recyclerMochilas);
         BtnAgregarmochilas = root.findViewById(R.id.btnAgregarMochila);
         BtncambiarModo = root.findViewById(R.id.btnCambiarModo);
+        BtnAgregarmochilas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),AddMochilas.class);
+                startActivity(intent);
+            }
+        });
+        BtncambiarModo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Se mueve a la actividad Modo Mochila
+                Intent intent = new Intent(getActivity(),ModoMochila.class);
+                startActivity(intent);
 
+            }
+        });
 
 
         return root;
@@ -63,11 +78,20 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        usuario = new Usuario();
-        String email = Preferences.ObtenerCredenciales(getActivity().getApplicationContext(),"email","null");
-        if(!email.equals("null")){
-            usuario.setCorreo(email);
+        usuario = Preferences.getUsuario(getActivity().getApplicationContext(),"obusuario");
+        ids = new ArrayList<>();
+        if(usuario==null){
+            usuario = new Usuario();
+            String email = Preferences.ObtenerCredenciales(getActivity().getApplicationContext(),"email","null");
+            if(!email.equals("null")){
+                usuario.setCorreo(email);
+            }
+        }else{
+            for(Mochila mochila: usuario.getMochilas()){
+                ids.add(mochila.getId_dispositivo());
+            }
         }
+
         listaDatos = new ArrayList<>();
         if(verConexioInternet()){
             db =  FirebaseFirestore.getInstance();
@@ -76,20 +100,30 @@ public class HomeFragment extends Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()){
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Mochila mochila = new Mochila(document.getId());
-                            mochila.setAlias((String) document.get("alias"));
-                            usuario.setMochilas(mochila);
+                            if(usuario.getMochilas().isEmpty()){
+                                Mochila mochila = new Mochila(document.getId());
+                                mochila.setAlias((String) document.get("alias"));
+                                usuario.setMochilas(mochila);
+
+                            }else{
+                                if(!ids.isEmpty()){
+                                    if(!ids.contains(document.getId())){
+                                        Mochila mochila = new Mochila(document.getId());
+                                        mochila.setAlias((String) document.get("alias"));
+                                        usuario.setMochilas(mochila);
+                                    }
+                                }
+                            }
                             if(TextUtils.isEmpty((String) document.get("alias"))){
-                                setListaDatos(mochila.getId_dispositivo());
+                                setListaDatos(document.getId());
                             }else{
                                 setListaDatos((String) document.get("alias"));
                             }
                         }
-                    }else{
-                        Toast.makeText(getActivity(),"Falla de conexion con el dispositivo",Toast.LENGTH_LONG).show();
                     }
+
                     Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
-                    adapter = new AdapterDatos(listaDatos,getActivity().getApplicationContext());
+                    adapter = new AdapterDatos(listaDatos,getContext(),getActivity());
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     recyclerView.setAdapter(adapter);
                     if(usuario.getMochilas().size()==0){
@@ -97,6 +131,9 @@ public class HomeFragment extends Fragment {
                     }
                 }
             });
+
+
+
         }
     }
 
