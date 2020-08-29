@@ -99,9 +99,9 @@ public class AddMochilas extends AppCompatActivity {
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if(task.isSuccessful()){
                                                                     DatabaseReference mochila_database = db_reference.child("dispositivos").child(id);
-                                                                    mochila_database.child("latitud").setValue("");
-                                                                    mochila_database.child("longitud").setValue("");
-                                                                    mochila_database.child("bateria").setValue(100);
+                                                                    mochila_database.child("ubicacion").child("latitud").setValue("");
+                                                                    mochila_database.child("ubicacion").child("longitud").setValue("");
+                                                                    mochila_database.child("informacion").child("bateria").setValue(100);
                                                                     Toast.makeText(getApplicationContext(),"Dispositivo registrado correctamente",Toast.LENGTH_SHORT).show();
                                                                 }else{
                                                                     Toast.makeText(getApplicationContext(),"Hubo un error en el registro. Intentelo nuevamente",Toast.LENGTH_SHORT).show();
