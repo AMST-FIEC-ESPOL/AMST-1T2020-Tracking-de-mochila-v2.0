@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.google.firebase:firebase-database:19.1.0'
 
 }
 
