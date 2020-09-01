@@ -89,7 +89,9 @@ public class MochilaFragment extends Fragment {
         }else{
             for(Mochila mochila: usuario.getMochilas()){
                 ids.add(mochila.getId_dispositivo());
+                mochila.setRango("neutral");
             }
+            Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
         }
 
         listaDatos = new ArrayList<>();

@@ -3,17 +3,18 @@ package com.example.g_bag.ui.mochila;
 public class Mochila {
 
     String id_dispositivo,alias,encd_apagado,bateria;
-    String latitud,longitud;
-    String modo;
+    double latitud,longitud;
+    String modo,rango;
 
     public Mochila(String id_dispositivo) {
         this.id_dispositivo = id_dispositivo;
         this.alias="";
-        this.latitud="0.00";
-        this.longitud="0.00";
+        this.latitud=0.0;
+        this.longitud=0.0;
         this.encd_apagado="off";
         this.bateria="";
         this.modo = "REAL";
+        this.rango ="neutral";
 
     }
 
@@ -41,19 +42,19 @@ public class Mochila {
         this.bateria = bateria;
     }
 
-    public String getLatitud() {
+    public double getLatitud() {
         return latitud;
     }
 
-    public void setLatitud(String latitud) {
+    public void setLatitud(double latitud) {
         this.latitud = latitud;
     }
 
-    public String getLongitud() {
+    public double getLongitud() {
         return longitud;
     }
 
-    public void setLongitud(String longitud) {
+    public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
 
@@ -71,5 +72,13 @@ public class Mochila {
 
     public void setModo(String modo) {
         this.modo = modo;
+    }
+
+    public String getRango() {
+        return rango;
+    }
+
+    public void setRango(String rango) {
+        this.rango = rango;
     }
 }

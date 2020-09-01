@@ -80,6 +80,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     private LocationSettingsRequest configresquisitoLocalizacion;
     FloatingActionButton floatingSearch;
     String distanciaMaxima;
+    Usuario usuario;
 
 
     @Override
@@ -97,6 +98,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         floatingSearch = root.findViewById(R.id.floatingSearch);
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
+        usuario = Preferences.getUsuario(getActivity().getApplicationContext(),"obusuario");
 
 
         //inicializacion variables
@@ -116,7 +118,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                 .setAlwaysShow(true);
         configresquisitoLocalizacion = builder.build();
 
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(
+        final PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(
                 clienteGoogleApi, builder.build()
         );
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
@@ -163,7 +165,28 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                         if(TextUtils.isEmpty(edtxDistancia.getText().toString().trim())){
                             edtxDistancia.setError("Este campo no puede estar vacio");
                         }else{
+                            mapaGoogle.clear();
+                            LatLng milatLng = new LatLng(milatitudeGPS, milongitudeGPS);
                             distanciaMaxima = edtxDistancia.getText().toString().trim();
+                            for(Mochila mochila: usuario.getMochilas()){
+                                if(mochila.getEncd_apagado().equalsIgnoreCase("on")){
+                                    LatLng LatLng_dispositivo = new LatLng(mochila.getLatitud(),mochila.getLongitud());
+                                    //realTimeMarker.get(indice).remove();
+                                    MarkerOptions markerOptions = new MarkerOptions();
+                                    double distancia_ub_dispo = CalculationByDistance(milatLng,LatLng_dispositivo);
+                                    if(Double.parseDouble(distanciaMaxima)>=distancia_ub_dispo){
+                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_green)).anchor(0.0f,0.5f);
+                                        mochila.setRango("aceptable");
+                                    }else{
+                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_red)).anchor(0.0f,0.5f);
+                                        mochila.setRango("fuera");
+                                    }
+                                    Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
+                                    markerOptions.position(LatLng_dispositivo);
+                                    mapaGoogle.addMarker(markerOptions);
+                                }
+
+                            }
                         }
                     }
                 });
@@ -185,13 +208,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             return;
         }
         mapaGoogle.setMyLocationEnabled(true);
-        UiSettings settings = mapaGoogle.getUiSettings();
-        settings.setZoomControlsEnabled(true);
+        //UiSettings settings = mapaGoogle.getUiSettings();
+        //settings.setZoomControlsEnabled(true);
         //setMarkerDragListener(mapaGoogle);
 
     }
 
-    public void obtenerMochila(DatabaseReference databaseReference, final String id_dispositivo){
+    public void obtenerMochila(DatabaseReference databaseReference, final Mochila mochila){
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -199,12 +222,21 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                     double latitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("latitud").getValue()));
                     double longitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("longitud").getValue()));
                     if(latitud!=0.0&&longitud!=0.0){
+                        mochila.setLatitud(latitud);
+                        mochila.setLongitud(longitud);
                         MarkerOptions markerOptions = new MarkerOptions();
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_black)).anchor(0.0f,1.0f);
+                        if(mochila.getRango().equalsIgnoreCase("neutral")){
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_black)).anchor(0.0f,1.0f);
+                        }else if(mochila.getRango().equalsIgnoreCase("fuera")){
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_red)).anchor(0.0f,1.0f);
+                        }else{
+                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_green)).anchor(0.0f,1.0f);
+                        }
+                        Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
                         markerOptions.position(new LatLng(latitud,longitud));
                         temprealTimeMarker.add(mapaGoogle.addMarker(markerOptions));
                     }else{
-                        Toast.makeText(getActivity(),"Dispositivo "+id_dispositivo+" fuera de alcance para enviar datos",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"Dispositivo "+mochila.getId_dispositivo()+" fuera de alcance para enviar datos",Toast.LENGTH_SHORT).show();
                     }
 
                 }catch (NullPointerException n){
@@ -231,6 +263,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     public void onStop() {
         super.onStop();
         clienteGoogleApi.disconnect();
+        if(usuario!=null){
+            for(Mochila mochila: usuario.getMochilas()){
+                mochila.setRango("neutral");
+            }
+            Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
+        }
     }
 
     @Override
@@ -241,6 +279,14 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         }
         clienteGoogleApi.stopAutoManage(getActivity());
         clienteGoogleApi.disconnect();
+        if(usuario!=null){
+            for(Mochila mochila: usuario.getMochilas()){
+                mochila.setRango("neutral");
+            }
+            Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
+        }
+
+
     }
 
     @Override
@@ -328,7 +374,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
         //mapaGoogle.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_logotipo)).anchor(0.0f,1.0f).position(latLng).title("Mi ubicacion")); //añade un marcador con un icono
 
-        Usuario usuario = Preferences.getUsuario(getActivity().getApplicationContext(),"obusuario");
+
         for(Marker marker: realTimeMarker){
             marker.remove();
         }
@@ -336,7 +382,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             for(Mochila mochila: usuario.getMochilas()){
                 if(mochila.getEncd_apagado().equalsIgnoreCase("on")){
                     DatabaseReference db_dispositivos = db_reference.child("dispositivos").child(mochila.getId_dispositivo());
-                    obtenerMochila(db_dispositivos,mochila.getId_dispositivo());
+                    obtenerMochila(db_dispositivos,mochila);
                 }
             }
         }
