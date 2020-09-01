@@ -35,7 +35,6 @@ import java.util.UUID;
 
 public class ModoMochila extends AppCompatActivity {
     private static  final int REQUEST_ENABLE_BT=0;
-    private static  final int REQUEST_DISCOVER_BT=1;
     ArrayList<String> alias_id = new ArrayList<>();
     ArrayList<String> mochilas_activas = new ArrayList<>();
     Spinner mochilas_spinner;
@@ -47,7 +46,7 @@ public class ModoMochila extends AppCompatActivity {
     TextView nom_bluetooth_Ref,con_nom_bluetooh,txMensaje;
     String nom_bluetooth;
     private static String adress_bluetooth;
-    EditText edtxtelefonaenviar;
+    EditText edtxtelefonaenviar,edtxTiempo_programado;
 
     Handler bluetoothIn;
     final int handlerState = 0;
@@ -87,6 +86,7 @@ public class ModoMochila extends AppCompatActivity {
         btnActivarModo = findViewById(R.id.btnActivarModo);
         edtxtelefonaenviar = findViewById(R.id.EdtxTelefonEnviar);
         btnModifTelefono = findViewById(R.id.btnModificarTelf);
+        edtxTiempo_programado = findViewById(R.id.edtxTiempo);
         btnEnviarBlue = findViewById(R.id.btnEnviarBlue);
         txMensaje.setVisibility(View.GONE);
         usuario = Preferences.getUsuario(getApplicationContext(),"obusuario");
@@ -100,14 +100,15 @@ public class ModoMochila extends AppCompatActivity {
             }
         };
 
-        verificadorEstadoBt();
-        mbluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
-        if(mbluetoothAdapter.isEnabled()){
-            bluetothView.setImageResource(R.drawable.ic_bluetooth_on);
-            Toast.makeText(this,"Bluetooh activado",Toast.LENGTH_SHORT).show();
-        }else{
-            bluetothView.setImageResource(R.drawable.ic_bluetooth_off);
-            Toast.makeText(this,"Bluetooh desactivado",Toast.LENGTH_SHORT).show();
+        if(verificadorEstadoBt()){
+            mbluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
+            if(mbluetoothAdapter.isEnabled()){
+                bluetothView.setImageResource(R.drawable.ic_bluetooth_on);
+                Toast.makeText(this,"Bluetooh activado",Toast.LENGTH_SHORT).show();
+            }else{
+                bluetothView.setImageResource(R.drawable.ic_bluetooth_off);
+                Toast.makeText(this,"Bluetooh desactivado",Toast.LENGTH_SHORT).show();
+            }
         }
 
 
@@ -115,6 +116,7 @@ public class ModoMochila extends AppCompatActivity {
         fabreturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                onPause();
                 onBackPressed();
                 finish();
             }
@@ -189,9 +191,16 @@ public class ModoMochila extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(estado_modo.isChecked()){
-                    Toast.makeText(getApplication(),"Estatico",Toast.LENGTH_SHORT).show();
+                    edtxTiempo_programado.setVisibility(View.VISIBLE);
+                    btnEnviarBlue.setVisibility(View.VISIBLE);
+                    edtxTiempo_programado.setEnabled(true);
+                    btnEnviarBlue.setEnabled(true);
 
                 }else{
+                    edtxTiempo_programado.setVisibility(View.GONE);
+                    btnEnviarBlue.setVisibility(View.GONE);
+                    edtxTiempo_programado.setEnabled(false);
+                    btnEnviarBlue.setEnabled(false);
                     Toast.makeText(getApplication(),"Real",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -266,15 +275,24 @@ public class ModoMochila extends AppCompatActivity {
         btnEnviarBlue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(MyConexionBT==null){
-                    onResume();
+                if(!TextUtils.isEmpty(edtxTiempo_programado.getText().toString().trim())){
+                    if(MyConexionBT==null){
+                        onResume();
+                    }else{
+                        if(verificadorEstadoBt()){
+                            System.out.println(MyConexionBT);
+                            System.out.println(adress_bluetooth);
+                            System.out.println(edtxtelefonaenviar.getText().toString().trim());
+                            String dataenviar = edtxtelefonaenviar.getText().toString().trim();
+                            String tiempo = edtxTiempo_programado.getText().toString().trim();
+                            //MyConexionBT.write(dataenviar.getBytes());
+                            MyConexionBT.write(dataenviar);
+                        }
+                    }
                 }else{
-                    System.out.println(MyConexionBT);
-                    System.out.println(adress_bluetooth);
-                    System.out.println(edtxtelefonaenviar.getText().toString().trim());
-                    String dataenviar = edtxtelefonaenviar.getText().toString().trim();
-                    MyConexionBT.write(dataenviar.getBytes());
+                    edtxTiempo_programado.setError("Este campo no puede estar vacio");
                 }
+
             }
         });
 
@@ -287,16 +305,19 @@ public class ModoMochila extends AppCompatActivity {
         }return true;
     }
 
-    public void verificadorEstadoBt(){
+    public boolean verificadorEstadoBt(){
         mbluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(mbluetoothAdapter==null){
             Toast.makeText(this,"El dispositivo no soporta Bluetooth",Toast.LENGTH_SHORT).show();
+            return false;
         }else{
             if(!mbluetoothAdapter.isEnabled()){
                 Intent enableBlue = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBlue,1);
                 bluetothView.setImageResource(R.drawable.ic_bluetooth_on);
+                return false;
             }
+            return true;
         }
     }
 
@@ -340,12 +361,16 @@ public class ModoMochila extends AppCompatActivity {
     public void onPause()
     {
         super.onPause();
-        try
-        { // Cuando se sale de la aplicación esta parte permite que no se deje abierto el socket
-            btSocket.close();
-        } catch (IOException e2) {
-            System.out.println(e2.getMessage());
+        if(btSocket!=null){
+            try
+            { // Cuando se sale de la aplicación esta parte permite que no se deje abierto el socket
+                btSocket.close();
+            }
+            catch (IOException e2) {
+                System.out.println(e2.getMessage());
+            }
         }
+
     }
     // Defines several constants used when transmitting messages between the
     // service and the UI.
@@ -383,21 +408,21 @@ public class ModoMochila extends AppCompatActivity {
 
         public void run()
         {
-            byte[] byte_in = new byte[1024];
+            byte[] byte_in = new byte[1];
             int numBytes; // bytes returned from read()
             // Se mantiene en modo escucha para determinar el ingreso de datos
             while (true) {
                 try {
                     // Read from the InputStream.
-                    numBytes = mmInStream.read(mmBuffer);
+                    /* = mmInStream.read(mmBuffer);
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = bluetoothIn.obtainMessage(
                             MessageConstants.MESSAGE_READ, numBytes, -1,
                             mmBuffer);
-                    readMsg.sendToTarget();
-                    /*mmInStream.read(byte_in);
+                    readMsg.sendToTarget();*/
+                    mmInStream.read(byte_in);
                     char ch = (char) byte_in[0];
-                    bluetoothIn.obtainMessage(handlerState, ch).sendToTarget();*/
+                    bluetoothIn.obtainMessage(handlerState, ch).sendToTarget();
                 } catch (IOException e) {
                     System.out.println(e.getMessage());
                     break;
@@ -406,7 +431,7 @@ public class ModoMochila extends AppCompatActivity {
         }
 
         //Envio de trama
-        /*public void write(String input) {
+        public void write(String input) {
             try {
                 mmOutStream.write(input.getBytes());
             }
@@ -415,8 +440,8 @@ public class ModoMochila extends AppCompatActivity {
                 //si no es posible enviar datos se cierra la conexión
                 Toast.makeText(getBaseContext(), "La Conexión fallo", Toast.LENGTH_LONG).show();
             }
-        }*/
-        public void write(byte[] bytes) {
+        }
+        /*public void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
 
@@ -435,7 +460,7 @@ public class ModoMochila extends AppCompatActivity {
                 writeErrorMsg.setData(bundle);
                 bluetoothIn.sendMessage(writeErrorMsg);
             }
-        }
+        }*/
 
         public void cancel() {
             try {
@@ -445,5 +470,4 @@ public class ModoMochila extends AppCompatActivity {
             }
         }
     }
-
 }
