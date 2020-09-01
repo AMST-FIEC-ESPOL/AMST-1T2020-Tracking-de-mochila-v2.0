@@ -1,6 +1,8 @@
 package com.example.g_bag.ui.mapa;
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -8,10 +10,13 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,9 +45,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -71,6 +78,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     public static final long INTERVALO_ACTUALIZACION_RAPIDA = INTERVALO_ACTUALIZACION / 2;
     private LocationRequest requisitoLocalizacion;
     private LocationSettingsRequest configresquisitoLocalizacion;
+    FloatingActionButton floatingSearch;
+    String distanciaMaxima;
 
 
     @Override
@@ -85,6 +94,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         View root = inflater.inflate(R.layout.fragment_mapa, container, false);
         manejadorLocalizacion = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         db_reference = FirebaseDatabase.getInstance().getReference();
+        floatingSearch = root.findViewById(R.id.floatingSearch);
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
 
@@ -138,6 +148,31 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             }
         });
 
+        floatingSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dialogo = new AlertDialog.Builder(getActivity());
+                dialogo.setTitle("Establezca la distancia maxima en Km");
+                final EditText edtxDistancia = new EditText(getActivity());
+                edtxDistancia.setInputType(InputType.TYPE_CLASS_NUMBER);
+                dialogo.setView(edtxDistancia);
+
+                dialogo.setPositiveButton("BUSCAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(TextUtils.isEmpty(edtxDistancia.getText().toString().trim())){
+                            edtxDistancia.setError("Este campo no puede estar vacio");
+                        }else{
+                            distanciaMaxima = edtxDistancia.getText().toString().trim();
+                        }
+                    }
+                });
+
+                dialogo.setNegativeButton("CANCELAR",null);
+                dialogo.show();
+            }
+        });
+
 
         return root;
     }
@@ -165,6 +200,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                     double longitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("longitud").getValue()));
                     if(latitud!=0.0&&longitud!=0.0){
                         MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_black)).anchor(0.0f,1.0f);
                         markerOptions.position(new LatLng(latitud,longitud));
                         temprealTimeMarker.add(mapaGoogle.addMarker(markerOptions));
                     }else{
