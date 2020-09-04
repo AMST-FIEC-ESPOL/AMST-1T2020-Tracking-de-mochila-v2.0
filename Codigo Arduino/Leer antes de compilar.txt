@@ -1,0 +1,20 @@
+En la ruta de libraries/Tsensors
+Editar el archivo Tsensors.cpp con cualquier editor de texto
+Y comentar la siguiente funcion:
+
+ISR(PCINT1_vect)
+
+quedando de esta forma:
+
+unsigned long lasttimeButton = 0;
+/*ISR(PCINT1_vect) {    // Interrupt service routine. Every single PCINT8..14 (=ADC0..5) change
+            // will generate an interrupt: but this will always be the same interrupt routine
+	unsigned long currenttime = millis();
+	unsigned long interval = (unsigned long)(currenttime - lasttimeButton);
+	if ( (digitalRead(buttonPin)==0) & (interval > 200) ) {
+		ButtonService();
+	}
+	lasttimeButton = currenttime;
+}*/
+
+Se lo realiza si esta utlizando un ARDUINO UNO ya que no posee multiples puertos Serial
