@@ -64,4 +64,15 @@ public class Usuario {
         this.mochilas.get(position).setEncd_apagado(modo);
     }
 
+    public ArrayList<Mochila> obtenerMochilasEnc(){
+        ArrayList<Mochila> mochilastemp = new ArrayList<>();
+        for(Mochila mochila: this.mochilas){
+            if(mochila.getEncd_apagado().equalsIgnoreCase("on")){
+                mochilastemp.add(mochila);
+            }
+        }
+        return mochilastemp;
+    }
+
+
 }

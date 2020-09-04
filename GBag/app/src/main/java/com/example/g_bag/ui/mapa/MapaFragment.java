@@ -93,7 +93,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_mapa, container, false);
-        manejadorLocalizacion = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        manejadorLocalizacion = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
         db_reference = FirebaseDatabase.getInstance().getReference();
         floatingSearch = root.findViewById(R.id.floatingSearch);
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
@@ -219,25 +220,30 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 try {
-                    double latitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("latitud").getValue()));
-                    double longitud = Double.parseDouble(String.valueOf(dataSnapshot.child("ubicacion").child("longitud").getValue()));
-                    if(latitud!=0.0&&longitud!=0.0){
-                        mochila.setLatitud(latitud);
-                        mochila.setLongitud(longitud);
-                        MarkerOptions markerOptions = new MarkerOptions();
-                        if(mochila.getRango().equalsIgnoreCase("neutral")){
-                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_black)).anchor(0.0f,1.0f);
-                        }else if(mochila.getRango().equalsIgnoreCase("fuera")){
-                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_red)).anchor(0.0f,1.0f);
+                    String latitud = String.valueOf(dataSnapshot.child("ubicacion").child("latitud").getValue());
+                    String longitud = String.valueOf(dataSnapshot.child("ubicacion").child("longitud").getValue());
+                    if(!latitud.isEmpty() && !longitud.isEmpty()){
+                        if(Double.parseDouble(latitud)!=0.0&&Double.parseDouble(longitud)!=0.0){
+                            mochila.setLatitud(Double.parseDouble(latitud));
+                            mochila.setLongitud(Double.parseDouble(longitud));
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            if(mochila.getRango().equalsIgnoreCase("neutral")){
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_black)).anchor(0.0f,1.0f);
+                            }else if(mochila.getRango().equalsIgnoreCase("fuera")){
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_red)).anchor(0.0f,1.0f);
+                            }else{
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_green)).anchor(0.0f,1.0f);
+                            }
+                            Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
+                            markerOptions.position(new LatLng(Double.parseDouble(latitud),Double.parseDouble(longitud)));
+                            temprealTimeMarker.add(mapaGoogle.addMarker(markerOptions));
                         }else{
-                            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.mochila_green)).anchor(0.0f,1.0f);
+                            Toast.makeText(getActivity(),"Dispositivo "+mochila.getId_dispositivo()+" fuera de alcance para enviar datos",Toast.LENGTH_SHORT).show();
                         }
-                        Preferences.save(getActivity().getApplicationContext(),usuario,"obusuario");
-                        markerOptions.position(new LatLng(latitud,longitud));
-                        temprealTimeMarker.add(mapaGoogle.addMarker(markerOptions));
                     }else{
-                        Toast.makeText(getActivity(),"Dispositivo "+mochila.getId_dispositivo()+" fuera de alcance para enviar datos",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"Active el dispositivo en un rango permitido",Toast.LENGTH_SHORT).show();
                     }
+
 
                 }catch (NullPointerException n){
                     Toast.makeText(getActivity(),"Error al obtener la ubicacion del dispositivo",Toast.LENGTH_SHORT).show();
@@ -300,14 +306,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        // Obtenemos la última ubicación al ser la primera vez
-        processLastLocation();
-        // Iniciamos las actualizaciones de ubicación
-        startLocationUpdates();
+        if(verConexioInternet()){
+            // Obtenemos la última ubicación al ser la primera vez
+            processLastLocation();
+            // Iniciamos las actualizaciones de ubicación
+            startLocationUpdates();
+        }
+
 
     }
 
     private void startLocationUpdates() {
+
         if (isLocationPermissionGranted()) {
             if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
@@ -347,8 +357,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     private void getLastLocation() {
         if (isLocationPermissionGranted()) {
             if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+
             }
+            System.out.println("ACEPTADO");
             ultimaLocalizacion = LocationServices.FusedLocationApi.getLastLocation(clienteGoogleApi);
         } else {
             manageDeniedPermission();
@@ -379,12 +390,22 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             marker.remove();
         }
         if(usuario!=null){
-            for(Mochila mochila: usuario.getMochilas()){
-                if(mochila.getEncd_apagado().equalsIgnoreCase("on")){
-                    DatabaseReference db_dispositivos = db_reference.child("dispositivos").child(mochila.getId_dispositivo());
-                    obtenerMochila(db_dispositivos,mochila);
+            if(usuario.getMochilas().size()!=0){
+                if(usuario.obtenerMochilasEnc().size()!=0){
+                    for(Mochila mochila: usuario.getMochilas()){
+                        if(mochila.getEncd_apagado().equalsIgnoreCase("on")){
+                            DatabaseReference db_dispositivos = db_reference.child("dispositivos").child(mochila.getId_dispositivo());
+                            obtenerMochila(db_dispositivos,mochila);
+                        }
+                    }
+                }else{
+                    Toast.makeText(getActivity(),"Active al menos un dispositivo",Toast.LENGTH_SHORT).show();
                 }
+            }else{
+                Toast.makeText(getActivity(),"Dirijase a la seccion mochila para agregar un dispositivo",Toast.LENGTH_SHORT).show();
             }
+
+
         }
         realTimeMarker.clear();
         realTimeMarker.addAll(temprealTimeMarker);

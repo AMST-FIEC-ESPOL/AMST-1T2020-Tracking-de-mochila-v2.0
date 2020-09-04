@@ -38,6 +38,7 @@ public class AddMochilas extends AppCompatActivity {
     Usuario usuario;
     ProgressDialog progressDialog;
     DatabaseReference db_reference;
+    boolean bandera = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,9 @@ public class AddMochilas extends AppCompatActivity {
         fabreturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(bandera){
+                    Toast.makeText(AddMochilas.this,"Click de nuevo en el Boton Mochila para recargar",Toast.LENGTH_LONG).show();
+                }
                 onBackPressed();
                 finish();
             }
@@ -102,28 +106,34 @@ public class AddMochilas extends AppCompatActivity {
                                                                     mochila_database.child("ubicacion").child("latitud").setValue("");
                                                                     mochila_database.child("ubicacion").child("longitud").setValue("");
                                                                     mochila_database.child("informacion").child("bateria").setValue(100);
+                                                                    bandera=true;
                                                                     Toast.makeText(getApplicationContext(),"Dispositivo registrado correctamente",Toast.LENGTH_SHORT).show();
                                                                 }else{
+                                                                    bandera=false;
                                                                     Toast.makeText(getApplicationContext(),"Hubo un error en el registro. Intentelo nuevamente",Toast.LENGTH_SHORT).show();
                                                                 }
                                                             }
                                                         });
                                                     }else{
+                                                        bandera=false;
                                                         idmochila.setError("Ingrese Id no registrado");
                                                         Toast.makeText(getApplicationContext(),"Dispositivo ya registrado",Toast.LENGTH_SHORT).show();
                                                     }
                                                 }else{
+                                                    bandera=false;
                                                     Toast.makeText(getApplicationContext(),"Hubo un error en el registro. Intentelo nuevamente",Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
 
                                     }else{
+                                        bandera=false;
                                         Toast.makeText(getApplicationContext(),"Autentificacion de Dispositivo Incorrecta",Toast.LENGTH_SHORT).show();
                                         idmochila.setError("Id dispositivo incorrecto");
                                     }
 
                                 }else{
+                                    bandera=false;
                                     Toast.makeText(getApplicationContext(),"Fallo de conexión en la nube",Toast.LENGTH_SHORT).show();
                                 }
                                 progressDialog.dismiss();

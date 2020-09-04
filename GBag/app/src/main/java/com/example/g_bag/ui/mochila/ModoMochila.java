@@ -99,7 +99,6 @@ public class ModoMochila extends AppCompatActivity {
                 }
             }
         };
-
         if(verificadorEstadoBt()){
             mbluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
             if(mbluetoothAdapter.isEnabled()){
@@ -190,12 +189,18 @@ public class ModoMochila extends AppCompatActivity {
         estado_modo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(MyConexionBT!=null){
+                    if(estado_modo.isChecked()){
+                        MyConexionBT.write("e");
+                    }else{
+                        MyConexionBT.write("r");
+                    }
+                }
                 if(estado_modo.isChecked()){
                     edtxTiempo_programado.setVisibility(View.VISIBLE);
                     btnEnviarBlue.setVisibility(View.VISIBLE);
                     edtxTiempo_programado.setEnabled(true);
                     btnEnviarBlue.setEnabled(true);
-
                 }else{
                     edtxTiempo_programado.setVisibility(View.GONE);
                     btnEnviarBlue.setVisibility(View.GONE);
@@ -257,6 +262,9 @@ public class ModoMochila extends AppCompatActivity {
         btnActivarModo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(MyConexionBT==null) {
+                    onResume();
+                }
                 if(verficarMochias_activas(mochilas_spinner.getSelectedItemPosition())){
                     if(nom_bluetooth!=null&&adress_bluetooth!=null&&!edtxtelefonaenviar.getText().toString().isEmpty()&&
                             !con_nom_bluetooh.getText().toString().isEmpty()){
@@ -276,19 +284,24 @@ public class ModoMochila extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(edtxTiempo_programado.getText().toString().trim())){
-                    if(MyConexionBT==null){
-                        onResume();
-                    }else{
-                        if(verificadorEstadoBt()){
-                            System.out.println(MyConexionBT);
-                            System.out.println(adress_bluetooth);
-                            System.out.println(edtxtelefonaenviar.getText().toString().trim());
-                            String dataenviar = edtxtelefonaenviar.getText().toString().trim();
-                            String tiempo = edtxTiempo_programado.getText().toString().trim();
-                            //MyConexionBT.write(dataenviar.getBytes());
-                            MyConexionBT.write(dataenviar);
+                    if(Integer.parseInt(edtxTiempo_programado.getText().toString().trim())!=0){
+                        if(MyConexionBT==null){
+                            onResume();
+                        }else{
+                            if(verificadorEstadoBt()){
+                                System.out.println(MyConexionBT);
+                                System.out.println(adress_bluetooth);
+                                System.out.println(edtxtelefonaenviar.getText().toString().trim());
+                                String dataenviar = edtxtelefonaenviar.getText().toString().trim();
+                                String tiempo = edtxTiempo_programado.getText().toString().trim();
+                                //MyConexionBT.write(dataenviar.getBytes());
+                                MyConexionBT.write(tiempo);
+                            }
                         }
+                    }else{
+                        edtxTiempo_programado.setError("El tiempo debe ser mayor que 0");
                     }
+
                 }else{
                     edtxTiempo_programado.setError("Este campo no puede estar vacio");
                 }
